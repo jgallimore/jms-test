@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tomee>
+  <!-- see http://tomee.apache.org/containers-and-resources.html -->
+
+  <!-- activate next line to be able to deploy applications in apps -->
+  <!-- <Deployments dir="apps" /> -->
+  <Resource id="WMQResourceAdapter" class-name="com.ibm.mq.connector.ResourceAdapterImpl">
+    connectionConcurrency 1
+    maxConnections 50
+    logWriterEnabled true
+    reconnectionRetryCount 5
+    reconnectionRetryInterval 300000
+    startupRetryCount 0
+    startupRetryInterval 30000
+    traceEnabled false
+  </Resource>
+
+  <Resource id="WMQConnectionFactory" class-name="com.ibm.mq.connector.outbound.ManagedConnectionFactoryImpl">
+    maxConnections=200
+    hostName=your-ip-or-hostname-here
+    port=1414
+    queueManager=test
+    channel=test
+    transportType=CLIENT
+    username=username
+    password=Passw0rd
+  </Resource>
+
+  <Container id="WMQMDBContainer" ctype="MESSAGE">
+    ResourceAdapter WMQResourceAdapter
+    ActivationSpecClass com.ibm.mq.connector.inbound.ActivationSpecImpl
+  </Container>
+
+  <Resource id="wmqTopic" type="javax.jms.Topic" class-name="com.ibm.mq.jms.MQTopic" constructor="topicName">
+    SkipImplicitAttributes=true
+    topicName=wmqTopic
+    XMSC_CONNECTION_TYPE_NAME=com.ibm.msg.client.wmq
+  </Resource>
+</tomee>
